@@ -1,0 +1,64 @@
+#+TITLE: ws-test-harness
+
+* Rationale
+Implements an integration test harness in order to test a service that
+depends itself on an external service.
+
+The external service is declared as express application with stubbed
+or faked responses.
+
+The service under test is also implemented as express application but
+in theory can be any HTTP service implementation.
+
+The driver of the integration test is mocha a node.js testing
+framework.
+
+Let's assume a client application needs to contact an intermediate
+broker web service to request a widget from a third party web service.
+
+The following sequence diagram should clarify the flow:
+
+#+BEGIN_SRC plantuml :file ws-test-harness-example-sequence.png
+title Example aysnc integration test flow
+actor "client\n(mocha)" as client
+participant ws as "WS\n(under test)"
+participant other_ws as "external WS\n(express app with\nstubbed responses)"
+autonumber
+client -> ws: get(widgetId=foobar)
+ws -> ws : transmorgify(widgetId=foobar)
+ws -> other_ws : get(blablablaId=0001, trid=abc)
+other_ws --> ws : 200 ok, status=pending
+ws --> client : 200 ok, status=pending
+...
+ws -> ws : callback(status=ready, trid=abc, blablablaId=1234)
+ws --> other_ws : 200 ok, thanks
+ws -> client : widget
+client --> ws : 200 ok
+#+END_SRC
+
+The /client/ is simulated by mocha using superagent. The /ws/ is the
+web service that is going to be tested, in this case for ease of use
+it's also an express application. And finally the third party endpoint
+/other_ws/ is faked through express with stubbed responses.
+
+* Dependencies
+- node.js
+- mocha
+- optional strace
+* Getting started
+- run integration test
+#+BEGIN_SRC sh
+
+#+END_SRC
+- checking under the hood with strace (might be useful for legacy node.js versions)
+#+BEGIN_SRC sh
+
+#+END_SRC
+
+* Closing words
+This is a simple skeleton using of the shelf components to allow for
+easy declarative integration testing. I specially like the declarative
+nature how tests are setup and the whole environment is bootstrapped.
+
+/strace/ was used to debug conditions that crashed node.js 1.0.29 on
+Debian Jessie without useful stack traces.
