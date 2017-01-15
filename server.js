@@ -1,36 +1,66 @@
 var express = require('express');
-var debug   = require('debug')('server');
 var crypto  = require('crypto');
-var listening_port = 1337;
+var request = require('request');
+var debug   = require('debug')('server');
+
+var config = {
+    listening_port      : 1337,
+    external_ws_endpoint: 'http://127.0.0.1:8000/fake-ext-ws'
+};
 
 function transmorgify(widgetId) { 
     var id = crypto.randomBytes(16).toString("hex");
     return id;
 }
 
-// server app
+function request_widget(blablablaId, callback) {
+    request(
+	{
+	    method: 'GET',
+	    uri: config.external_ws_endpoint,
+	    qs: {blablablaId: blablablaId}
+	},
+	function (error, res, body) {
+	    if (error) {
+		console.error("Error calling external WS: %s", error);
+		throw error; // crash server!
+	    } else if (res.statusCode != 200) {
+		console.error("HTTP error: %s calling external WS", res.statusCode);
+	    }
+	    callback (res.statusCode, JSON.parse(body));
+	}
+    );
+}
+
 var app = express();
 
 app.get('/widget', function (req, res) {
-    var widgetId = req.query.widgetId;
+    var widgetId    = req.query.widgetId;
     var blablablaId = transmorgify(widgetId);
-    debug(":: blablablaId: %s", blablablaId); // FIXME: debug is not working
-    console.log(":: blablablaId %s", blablablaId);
 
-    // TODO: call external WS with blablablaId
+    request_widget(
+	blablablaId,
+	function(statusCode, body) {
+	    res.statusCode = statusCode;
+	    var responseBody = {
+		status: null,
+		widgetId: widgetId
+	    };
 
-    // TODO: process external WS response
+	    if (statusCode == 200) {
+		var status =  body.status;
+		responseBody.status = status;
+	    } else {
+		responseBody.status = 'error';
+	    };
 
-    var responseBody = {
-	status: "pending",
-	widgetId: widgetId,
-    };
-
-    res.statusCode = 200;
-    res.write(JSON.stringify(responseBody));
-    res.end();
+	    res.write(JSON.stringify(responseBody));
+	    res.end();
+	}
+    );
 });
 
-app.listen(listening_port, function () {
-    console.log('server listening on port ' + listening_port + '!');
+app.listen(config.listening_port, function () {
+    console.log('server listening on port: %s',
+		config.listening_port);
 });
