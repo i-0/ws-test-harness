@@ -1,3 +1,6 @@
+/*
+ * To run standalone faker endpoints: $ node server-faker.js
+ */
 var harness = require('./harness')();
 
 var config = {

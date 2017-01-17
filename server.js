@@ -1,3 +1,6 @@
+/*
+ * To run server outside of test context: $ node server.js
+ */
 var app = require('./app')();
 var debug = require('debug')('server');
 var config = {

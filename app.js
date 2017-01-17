@@ -1,3 +1,6 @@
+/*
+ * Express app is defined here, to run please use server.js
+ */
 module.exports = function (opts) {
     var express = require('express');
     var crypto = require('crypto');

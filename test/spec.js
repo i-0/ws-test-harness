@@ -14,7 +14,6 @@ var reqtest    = require('supertest');
 var should     = require('should');
 var debug      = require('debug')('spec');
 
-
 describe('loading test fake endpoint fixture', function () {
     // fake endpoints
     var faker_server;
@@ -22,7 +21,7 @@ describe('loading test fake endpoint fixture', function () {
         faker_listening_port: 1337,
     }
 
-    // server app under test, does not need init
+    // server app under test
     var app = require('../app')();
 
     before(function (done) {
@@ -38,11 +37,7 @@ describe('loading test fake endpoint fixture', function () {
         done();
     });
 
-    ///////////////////////////////////////////
-    describe('app basic root test', function ()
-    ///////////////////////////////////////////
-    {
-
+    describe('app basic root test', function () {
         it('responds to /', function testSlash(done) {
             reqtest(app)
                 .get('/')
@@ -51,11 +46,7 @@ describe('loading test fake endpoint fixture', function () {
         });
     });
 
-    ///////////////////////////////////////////
-    describe('app basic widget test', function ()
-    ///////////////////////////////////////////
-    {
-
+    describe('app basic widget test', function () {
         it('responds pending to /widget', function testSlash(done) {
             reqtest(app)
                 .get('/widget')
@@ -71,7 +62,6 @@ describe('loading test fake endpoint fixture', function () {
 
     after(function (done) {
         if (faker_server) faker_server.close();
-
         done();
     });
 
