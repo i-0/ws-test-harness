@@ -1,8 +1,12 @@
 #+TITLE: ws-test-harness
 
 * Rationale
-Implements an integration test harness in order to test a service that
-depends itself on an external service.
+This is a simple skeleton using of the shelf components to allow for
+easy declarative integration testing. I specially like the declarative
+nature how tests are setup and the whole environment is bootstrapped.
+
+To acomplish this it implements an integration test harness in order
+to test a service that depends itself on an external service.
 
 The external service is declared as express application with stubbed
 or faked responses.
@@ -18,6 +22,15 @@ broker web service to request a widget from a third party web service.
 
 The following sequence diagram should clarify the flow:
 
+#+BEGIN_COMMENT:
+Unfortunately github support for org-mode babel is incomplete. To not
+show the plantuml source code the :exports flag has to be set to none.
+
+Additionally to show the generated image it has to be manually inserted
+through a #+HTML: directive.
+
+One more reason to abandon github ;)
+#+END_COMMENT:
 #+BEGIN_SRC plantuml :file ws-test-harness-example-sequence.png :exports none
 title Example aysnc integration test flow
 actor "client\n(mocha)" as client
@@ -51,7 +64,7 @@ it's also an express application. And finally the third party endpoint
 - supertest
 - optional: strace
 
-* TODO Getting started
+* Getting started
 
 ** Run integration test
 Depends: apt-get install nodejs mocha
@@ -59,15 +72,9 @@ Depends: apt-get install nodejs mocha
   mocha [debug] -R spec spec.js
 #+END_SRC
 
-** Using strace to debug legacy node.js versions with incomplete stack traces
+** Using /strace/ to debug legacy node.js versions with incomplete stack traces
+/strace/ was used to debug conditions that crashed node.js 1.0.29 on
+Debian Jessie without useful stack traces.
 #+BEGIN_SRC sh
   strace -f -o mocha.strace.dump mocha --reporter spec --check-leaks  --globals i spec.js | grep bind --color
 #+END_SRC
-
-* Closing words
-This is a simple skeleton using of the shelf components to allow for
-easy declarative integration testing. I specially like the declarative
-nature how tests are setup and the whole environment is bootstrapped.
-
-/strace/ was used to debug conditions that crashed node.js 1.0.29 on
-Debian Jessie without useful stack traces.
