@@ -18,7 +18,7 @@ broker web service to request a widget from a third party web service.
 
 The following sequence diagram should clarify the flow:
 
-#+BEGIN_SRC plantuml :file ws-test-harness-example-sequence.png
+#+BEGIN_SRC plantuml :file ws-test-harness-example-sequence.png :results silent
 title Example aysnc integration test flow
 actor "client\n(mocha)" as client
 participant ws as "WS\n(under test)"
