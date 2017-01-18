@@ -18,8 +18,8 @@ describe('loading test fake endpoint fixture', function () {
     // fake endpoints
     var faker_server;
     var config = {
-        faker_listening_port: 1337,
-    }
+        faker_listening_port: 1337
+    };
 
     // server app under test
     var app = require('../app')();
