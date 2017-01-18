@@ -36,6 +36,8 @@ ws -> client : widget
 client --> ws : 200 ok
 #+END_SRC
 
+#+HTML: <p align="center"><img src=ws-test-harness-example-sequence.png/></p>
+
 The /client/ is simulated by mocha using superagent. The /ws/ is the
 web service that is going to be tested, in this case for ease of use
 it's also an express application. And finally the third party endpoint
@@ -43,16 +45,23 @@ it's also an express application. And finally the third party endpoint
 
 * Dependencies
 - node.js
+- npm
 - mocha
-- optional strace
-* Getting started
-- run integration test
-#+BEGIN_SRC sh
+- express
+- supertest
+- optional: strace
 
+* TODO Getting started
+
+** Run integration test
+Depends: apt-get install nodejs mocha
+#+BEGIN_SRC sh
+  mocha [debug] -R spec spec.js
 #+END_SRC
-- checking under the hood with strace (might be useful for legacy node.js versions)
-#+BEGIN_SRC sh
 
+** Using strace to debug legacy node.js versions with incomplete stack traces
+#+BEGIN_SRC sh
+  strace -f -o mocha.strace.dump mocha --reporter spec --check-leaks  --globals i spec.js | grep bind --color
 #+END_SRC
 
 * Closing words
